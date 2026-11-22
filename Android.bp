@@ -1,0 +1,46 @@
+soong_namespace {}
+
+android_app_import {
+    name: "MalachiteParts",
+    owner: "xiaomi",
+    apk: "apps/MalachiteParts.apk",
+    certificate: "platform",
+    privileged: true,
+    required: ["privapp-permissions-malachiteparts.xml"],
+    system_ext_specific: true,
+    dex_preopt: { enabled: false },
+}
+
+android_app_import {
+    name: "MMIGroup_NoIcon",
+    owner: "xiaomi",
+    apk: "apps/MMIGroup_NoIcon.apk",
+    certificate: "platform",
+    optional_uses_libs: ["mediatek-ims-base", "mediatek-telephony-base"],
+    system_ext_specific: true,
+    dex_preopt: { enabled: false },
+}
+
+android_app_import {
+    name: "goodix_sz",
+    owner: "goodix",
+    apk: "apps/goodix_sz.apk",
+    certificate: "platform",
+    system_ext_specific: true,
+    dex_preopt: { enabled: false },
+}
+
+cc_binary {
+    name: "malachited",
+    srcs: ["daemon/malachited.c"],
+    shared_libs: ["libcutils", "liblog"],
+    system_ext_specific: true,
+    init_rc: ["init/malachited.rc"],
+}
+
+prebuilt_etc {
+    name: "privapp-permissions-malachiteparts.xml",
+    src: "permissions/privapp-permissions-malachiteparts.xml",
+    sub_dir: "permissions",
+    system_ext_specific: true,
+}

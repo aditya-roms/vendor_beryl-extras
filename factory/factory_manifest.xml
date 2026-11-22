@@ -1,0 +1,12 @@
+<manifest version="1.0" type="device">
+    <hal format="hidl">
+        <name>interfaces.factoryInterface</name>
+        <transport>hwbinder</transport>
+        <fqname>@1.0::IFactoryInterface/default</fqname>
+    </hal>
+    <hal format="hidl">
+        <name>interfaces.factoryAta</name>
+        <transport>hwbinder</transport>
+        <fqname>@1.0::IFactoryAta/default</fqname>
+    </hal>
+</manifest>

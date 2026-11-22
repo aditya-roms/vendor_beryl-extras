@@ -1,0 +1,23 @@
+on boot
+    symlink /sys/devices/virtual/mi_display/disp_feature/disp-DSI-0/disp_param /dev/gf_disp_param
+    chown system system /sys/devices/virtual/mi_display/disp_feature/disp-DSI-0/disp_param
+    chmod 0664 /sys/devices/virtual/mi_display/disp_feature/disp-DSI-0/disp_param
+
+on post-fs-data
+    mkdir /data/vendor/goodix 0777 system system
+
+service malachited /system_ext/bin/malachited
+    class main
+    user root
+    group system
+    socket malachited stream 0666 system system
+
+# SmartPA nodes appear late (speaker driver probe); hand them to the system group once boot is done
+on property:sys.boot_completed=1
+    chown system system /sys/class/smartpa/re25_calib
+    chown system system /sys/class/smartpa/f0_calib
+    chmod 0664 /sys/class/smartpa/re25_calib
+    chmod 0664 /sys/class/smartpa/f0_calib
+    # disp_param is reset to root:0644 after early boot; the Goodix HAL (user system) needs to write it
+    chown system system /sys/devices/virtual/mi_display/disp_feature/disp-DSI-0/disp_param
+    chmod 0664 /sys/devices/virtual/mi_display/disp_feature/disp-DSI-0/disp_param

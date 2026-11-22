@@ -1,0 +1,3 @@
+interfaces.factoryInterface::IFactoryInterface u:object_r:factory_interface_hwservice:s0
+interfaces.factoryAta::IFactoryAta             u:object_r:factory_interface_hwservice:s0
+interfaces.customNvService::ICustomNv          u:object_r:factory_interface_hwservice:s0

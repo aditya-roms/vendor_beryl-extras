@@ -1,0 +1,53 @@
+diff --git a/tools/releasetools/common.py b/tools/releasetools/common.py
+index a79385b..cd5bddb 100644
+--- a/tools/releasetools/common.py
++++ b/tools/releasetools/common.py
+@@ -1105,6 +1105,8 @@ class PartitionBuildProps(object):
+     """
+     data = ''
+     partition_map = PartitionMapFromTargetFiles(input_file)
++    if name not in partition_map:
++      return ''
+     for prop_file in ['{}/etc/build.prop'.format(partition_map[name]),
+                       '{}/build.prop'.format(partition_map[name])]:
+       try:
+@@ -1363,8 +1365,11 @@ def MergeDynamicPartitionInfoDicts(framework_dict, vendor_dict):
+   return merged_dict
+ 
+ 
+-def PartitionMapFromTargetFiles(target_files_dir):
+-  """Builds a map from partition -> path within an extracted target files directory."""
++def PartitionMapFromTargetFiles(target_files):
++  """Builds a map from partition -> path within target files.
++
++  target_files may be an extracted directory, a ZipFile, or a path to a zip.
++  """
+   # Keep possible_subdirs in sync with build/make/core/board_config.mk.
+   possible_subdirs = {
+       "system": ["SYSTEM"],
+@@ -1378,10 +1383,24 @@ def PartitionMapFromTargetFiles(target_files_dir):
+       "odm_dlkm": ["ODM_DLKM", "VENDOR/odm_dlkm", "SYSTEM/vendor/odm_dlkm"],
+       "system_dlkm": ["SYSTEM_DLKM", "SYSTEM/system_dlkm"],
+   }
++  if isinstance(target_files, zipfile.ZipFile):
++    names = target_files.namelist()
++  elif os.path.isdir(target_files):
++    names = None
++  else:
++    with zipfile.ZipFile(target_files) as z:
++      names = z.namelist()
++
++  def exists(subdir):
++    if names is None:
++      return os.path.exists(os.path.join(target_files, subdir))
++    prefix = subdir + "/"
++    return any(n.startswith(prefix) for n in names)
++
+   partition_map = {}
+   for partition, subdirs in possible_subdirs.items():
+     for subdir in subdirs:
+-      if os.path.exists(os.path.join(target_files_dir, subdir)):
++      if exists(subdir):
+         partition_map[partition] = subdir
+         break
+   return partition_map

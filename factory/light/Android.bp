@@ -1,0 +1,13 @@
+// Stock HIDL light library for the factory service. Its own namespace, so trees that build
+// android.hardware.light@2.0 themselves (Android 16) never see this module at all.
+soong_namespace {}
+
+cc_prebuilt_library_shared {
+    name: "android.hardware.light@2.0_mx",
+    stem: "android.hardware.light@2.0",
+    target: { android_arm64: { srcs: ["android.hardware.light@2.0.so"] } },
+    compile_multilib: "64",
+    vendor: true,
+    check_elf_files: false,
+    strip: { none: true },
+}

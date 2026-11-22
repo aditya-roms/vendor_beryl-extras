@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<permissions>
+    <library name="mediatek-ims-base" file="/system_ext/framework/mediatek-ims-base-cit.jar" />
+    <library name="mediatek-telephony-base" file="/system_ext/framework/mediatek-telephony-base-cit.jar" />
+</permissions>

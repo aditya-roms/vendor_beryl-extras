@@ -1,0 +1,4 @@
+type sysfs_malachite_dispparam, sysfs_type, fs_type;
+
+allow hal_fingerprint_default sysfs_malachite_dispparam:file rw_file_perms;
+allow hal_fingerprint_default device:lnk_file read;

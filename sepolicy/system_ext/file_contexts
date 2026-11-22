@@ -1,0 +1,2 @@
+/system_ext/bin/malachited      u:object_r:malachited_exec:s0
+/dev/socket/malachited          u:object_r:malachited_socket:s0

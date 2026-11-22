@@ -1,0 +1,8 @@
+allow factory_services platform_app:binder { call transfer };
+allow factory_services platform_app:binder { transfer };
+allow factory_services platform_app:fd { use };
+allow platform_app factory_interface_hwservice:fd { use };
+allow platform_app factory_interface_hwservice:hwservice_manager { find };
+allow platform_app factory_services:binder { call transfer };
+allow platform_app factory_services:binder { transfer };
+allow platform_app factory_services:fd { use };

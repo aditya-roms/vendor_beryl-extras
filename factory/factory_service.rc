@@ -1,0 +1,6 @@
+service interfaces.factoryInterface@1.0-service /vendor/bin/hw/interfaces.factoryInterface@1.0-service
+    interface interfaces.factoryInterface@1.0::IFactoryInterface default
+    class late_start
+    user system
+    group root system sdcard_rw sdcard_r media_rw radio camera wifi
+    seclabel u:r:factory_services:s0

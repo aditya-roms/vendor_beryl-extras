@@ -1,0 +1,99 @@
+cc_prebuilt_binary {
+    name: "interfaces.factoryInterface@1.0-service",
+    srcs: ["bin/hw/interfaces.factoryInterface@1.0-service"],
+    relative_install_path: "hw",
+    vendor: true,
+    compile_multilib: "64",
+    check_elf_files: false,
+    strip: { none: true },
+    init_rc: ["factory_service.rc"],
+    vintf_fragments: ["factory_manifest.xml"],
+    required: [
+        "interfaces.factoryInterface@1.0_mx",
+        "interfaces.factoryAta@1.0_mx",
+        "interfaces.customNvService@1.0_mx",
+        "libFactoryHALCommon_mx",
+        "vendor.mediatek.hardware.nvram@1.1_mx",
+        "vendor.mediatek.hardware.nvram@1.0_mx",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "interfaces.factoryInterface@1.0_mx",
+    stem: "interfaces.factoryInterface@1.0",
+    target: { android_arm64: { srcs: ["lib64/interfaces.factoryInterface@1.0.so"] } },
+    compile_multilib: "64",
+    vendor: true,
+    check_elf_files: false,
+    strip: { none: true },
+}
+
+cc_prebuilt_library_shared {
+    name: "interfaces.factoryAta@1.0_mx",
+    stem: "interfaces.factoryAta@1.0",
+    target: { android_arm64: { srcs: ["lib64/interfaces.factoryAta@1.0.so"] } },
+    compile_multilib: "64",
+    vendor: true,
+    check_elf_files: false,
+    strip: { none: true },
+}
+
+cc_prebuilt_library_shared {
+    name: "interfaces.customNvService@1.0_mx",
+    stem: "interfaces.customNvService@1.0",
+    target: { android_arm64: { srcs: ["lib64/interfaces.customNvService@1.0.so"] } },
+    compile_multilib: "64",
+    vendor: true,
+    check_elf_files: false,
+    strip: { none: true },
+}
+
+cc_prebuilt_library_shared {
+    name: "libFactoryHALCommon_mx",
+    stem: "libFactoryHALCommon",
+    target: { android_arm64: { srcs: ["lib64/libFactoryHALCommon.so"] } },
+    compile_multilib: "64",
+    vendor: true,
+    check_elf_files: false,
+    strip: { none: true },
+}
+
+cc_prebuilt_library_shared {
+    name: "vendor.mediatek.hardware.nvram@1.1_mx",
+    stem: "vendor.mediatek.hardware.nvram@1.1",
+    target: { android_arm64: { srcs: ["lib64/vendor.mediatek.hardware.nvram@1.1.so"] } },
+    compile_multilib: "64",
+    vendor: true,
+    check_elf_files: false,
+    strip: { none: true },
+}
+
+
+cc_prebuilt_library_shared {
+    name: "vendor.mediatek.hardware.nvram@1.0_mx",
+    stem: "vendor.mediatek.hardware.nvram@1.0",
+    target: { android_arm64: { srcs: ["lib64/vendor.mediatek.hardware.nvram@1.0.so"] } },
+    compile_multilib: "64",
+    vendor: true,
+    check_elf_files: false,
+    strip: { none: true },
+}
+
+dex_import {
+    name: "mediatek-ims-base-cit",
+    jars: ["framework/mediatek-ims-base.jar"],
+    system_ext_specific: true,
+}
+
+dex_import {
+    name: "mediatek-telephony-base-cit",
+    jars: ["framework/mediatek-telephony-base.jar"],
+    system_ext_specific: true,
+}
+
+prebuilt_etc {
+    name: "cit-mtk-libs.xml",
+    src: "framework/cit-mtk-libs.xml",
+    sub_dir: "permissions",
+    system_ext_specific: true,
+}

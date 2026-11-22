@@ -1,0 +1,7 @@
+allow hal_fingerprint_default platform_app:binder { call transfer };
+allow hal_fingerprint_default platform_app:binder { transfer };
+allow hal_fingerprint_default platform_app:fd { use };
+allow platform_app hal_fingerprint_default:binder { call transfer };
+allow platform_app hal_fingerprint_default:binder { transfer };
+allow platform_app hal_fingerprint_default:fd { use };
+allow platform_app vendor_hal_fingerprint_service_xiaomi:service_manager { find };

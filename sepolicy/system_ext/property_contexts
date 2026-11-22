@@ -1,0 +1,2 @@
+ctl.start$interfaces.factoryInterface@1.0-service u:object_r:ctl_mmi_factory_prop:s0
+ctl.stop$interfaces.factoryInterface@1.0-service  u:object_r:ctl_mmi_factory_prop:s0
