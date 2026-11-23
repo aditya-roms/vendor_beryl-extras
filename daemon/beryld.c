@@ -1,4 +1,4 @@
-#define LOG_TAG "malachited"
+#define LOG_TAG "beryld"
 
 #include <ctype.h>
 #include <dirent.h>
@@ -262,16 +262,19 @@ static void handle(int c) {
 int main(void) {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGCHLD, SIG_IGN);  /* reap the gfprep watcher automatically */
-    int s = android_get_control_socket("malachited");
+    int s = android_get_control_socket("beryld");
     if (s < 0) {
-        ALOGE("no control socket: %s", strerror(errno));
+        s = android_get_control_socket("malachited");
+    }
+    if (s < 0) {
+        ALOGE("no control socket (tried beryld and malachited): %s", strerror(errno));
         return 1;
     }
     if (listen(s, 4) < 0) {
         ALOGE("listen failed: %s", strerror(errno));
         return 1;
     }
-    ALOGI("ready");
+    ALOGI("beryld ready");
     for (;;) {
         int c = accept4(s, NULL, NULL, SOCK_CLOEXEC);
         if (c < 0) {

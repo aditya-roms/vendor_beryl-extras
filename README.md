@@ -1,12 +1,12 @@
 # vendor_beryl-extras
 
-Port of Malachite Extras for **Redmi Note 14 5G (beryl)**:
-- **Parts** (CPU, GPU, thermal, touch sampling, ZRAM, refresh rate, resolution, per-app profiles)
-- **Xiaomi CIT** (factory hardware tests, factory HAL, test configs, MediaTek telephony classes)
+Universal port of device extras for **Redmi Note 14 5G / Redmi Note 15R Pro / POCO M7 Pro 5G (beryl / citrine)**:
+- **Beryl Parts** (CPU governor/frequencies, GPU OPP target, thermal profile `sconfig`, touch sampling rate, ZRAM resizing & compression algorithms, refresh rate, resolution, per-app profiles)
+- **Xiaomi CIT** (factory hardware tests, factory HAL service `interfaces.factoryInterface@1.0-service`, test configs in `/vendor/etc/mmigroup`, MediaTek telephony classes)
 - **Goodix FOD Calibration / Test** screen
-- **malachited daemon** allowing Parts to tune kernel settings on user builds without root
+- **beryld rootless daemon** allowing Parts to tune kernel settings on user builds without root privileges
 
-Supports Android 16 and Android 17 source trees. All APKs are automatically re-signed with your platform key during the ROM build.
+Fully compatible with Android 16 and Android 17 AOSP/LineageOS trees, specifically the [TracenPlayground/device_xiaomi_beryl](https://github.com/TracenPlayground/device_xiaomi_beryl) device and vendor trees. All APKs are automatically re-signed with your ROM's platform certificate during compilation.
 
 ---
 
@@ -16,14 +16,14 @@ Supports Android 16 and Android 17 source trees. All APKs are automatically re-s
   ```bash
   sudo apt install git-lfs && git lfs install
   ```
-- Device tree at `device/xiaomi/beryl`
-- Vendor blobs at `vendor/xiaomi/beryl` (or `vendor/xiaomi/beryl/proprietary/vendor`)
+- Device tree at `device/xiaomi/beryl` (e.g. from `TracenPlayground/device_xiaomi_beryl`)
+- Vendor blobs at `vendor/xiaomi/beryl` (e.g. from `TracenPlayground/vendor_xiaomi_beryl`)
 
 ---
 
 ## Integration
 
-### 1. Add to local manifest (`.repo/local_manifests/beryl-extras.xml`):
+### 1. Add to local manifest (`.repo/local_manifests/beryl.xml` or `beryl-extras.xml`):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -72,13 +72,14 @@ In `device/xiaomi/beryl/BoardConfig.mk`:
 
 1. **Automatic Build Patches**:
    On every build, `BoardConfigExtras.mk` automatically:
-   - Patches `system/sepolicy` (exempts `malachited` from `coredomain.te` `proc`/`sysfs` neverallows).
+   - Patches `system/sepolicy` (exempts `beryld` from `coredomain.te` `proc`/`sysfs` neverallows).
    - Patches the Goodix HAL blob (`fingerprint.goodix_fod.default.so`) to point display parameter calls to `/dev/gf_disp_param`.
    - Handles Android 17 vs Android 16 differences (`platform_app_all` attribute detection and legacy vs A17 sepolicy).
 
 2. **Touch Sampling**:
-   - Up to standard frequencies work root-free.
-   - High-rate touch sampling (1000 Hz) requires granting root access in KernelSU / Magisk.
+   - Supports FocalTech (`fts_ts`) and Goodix touch controllers found across Redmi Note 14 5G hardware batches.
+   - Standard frequencies work root-free.
+   - Extreme touch sampling (1000 Hz) requires granting root access in KernelSU / Magisk.
 
 3. **CIT Access**:
    - Open via Parts app or by dialing `*#*#6484#*#*` in the dialer.

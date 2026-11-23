@@ -7,10 +7,10 @@ CIT=$O/system_ext/app/MMIGroup_NoIcon/MMIGroup_NoIcon.apk
 GX=$(ls $O/system_ext/app/goodix_sz/*.apk 2>/dev/null | head -1)
 HAL=$O/vendor/lib64/hw/fingerprint.goodix_fod.default.so
 echo "beryl-extras check ($O)"
-chk "Parts installed as privileged app"      "ls $O/system_ext/priv-app/MalachiteParts/*.apk >/dev/null 2>&1"
-chk "Parts privapp permissions"               "[ -f $O/system_ext/etc/permissions/privapp-permissions-malachiteparts.xml ]"
-chk "malachited installed, with gfprep"       "strings $O/system_ext/bin/malachited 2>/dev/null | grep -q disp-DSI-0/disp_param"
-chk "malachited sepolicy applied"             "grep -q mlstrustedobject system/sepolicy/private/malachited.te 2>/dev/null"
+chk "Parts installed as privileged app"      "ls $O/system_ext/priv-app/BerylParts/*.apk >/dev/null 2>&1 || ls $O/system_ext/priv-app/MalachiteParts/*.apk >/dev/null 2>&1"
+chk "Parts privapp permissions"               "[ -f $O/system_ext/etc/permissions/privapp-permissions-berylparts.xml ] || [ -f $O/system_ext/etc/permissions/privapp-permissions-malachiteparts.xml ]"
+chk "beryld installed, with gfprep"           "strings $O/system_ext/bin/beryld 2>/dev/null | grep -q disp-DSI-0/disp_param || strings $O/system_ext/bin/malachited 2>/dev/null | grep -q disp-DSI-0/disp_param"
+chk "beryld sepolicy applied"                 "grep -q mlstrustedobject system/sepolicy/private/beryld.te 2>/dev/null || grep -q mlstrustedobject system/sepolicy/private/malachited.te 2>/dev/null"
 chk "CIT normal-mode entry exported"          "x $CIT | grep -A4 '\"com.factory.mmigroup.MMIGroupNormalMode\"' | grep -q 'exported.*=true'"
 chk "CIT MediaTek libraries declared"         "[ \$(x $CIT | grep -c 'E: uses-library') -ge 2 ] && [ -f $O/system_ext/etc/permissions/cit-mtk-libs.xml ]"
 chk "CIT MediaTek library jars"               "[ \$(ls $O/system_ext/framework/*-cit.jar 2>/dev/null | wc -l) -ge 2 ]"

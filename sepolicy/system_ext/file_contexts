@@ -1,2 +1,3 @@
-/system_ext/bin/malachited      u:object_r:malachited_exec:s0
-/dev/socket/malachited          u:object_r:malachited_socket:s0
+/system_ext/bin/beryld      u:object_r:beryld_exec:s0
+/dev/socket/beryld          u:object_r:beryld_socket:s0
+/dev/socket/malachited      u:object_r:beryld_socket:s0

@@ -1,0 +1,42 @@
+type beryld, domain;
+typeattribute beryld coredomain;
+type beryld_exec, system_file_type, exec_type, file_type;
+type beryld_socket, file_type;
+
+init_daemon_domain(beryld)
+
+allow beryld self:unix_stream_socket create_stream_socket_perms;
+allow beryld self:capability { sys_admin };
+allow beryld sysfs:dir r_dir_perms;
+allow beryld sysfs:file rw_file_perms;
+allow beryld sysfs_zram:file rw_file_perms;
+allow beryld proc:file rw_file_perms;
+allow beryld ram_device:blk_file rw_file_perms;
+allow beryld toolbox_exec:file rx_file_perms;
+
+allow platform_app_all socket_device:dir search;
+allow platform_app_all beryld_socket:sock_file write;
+allow platform_app_all beryld:unix_stream_socket connectto;
+
+# Xiaomi CIT (com.factory.mmigroup) asks init to start its factory service
+system_internal_prop(ctl_mmi_factory_prop)
+set_prop(platform_app_all, ctl_mmi_factory_prop)
+
+# Apps run with per-app MLS categories; let them reach this socket/daemon
+typeattribute beryld_socket mlstrustedobject;
+typeattribute beryld mlstrustedsubject;
+set_prop(system_app, ctl_mmi_factory_prop)
+
+# Parts nodes carry their own labels (some vendor-defined), reachable only via the attributes.
+# The daemon's allowlist (kReadable/kWritable) still limits it to the exact paths Parts uses.
+allow beryld { sysfs_type proc_type }:dir r_dir_perms;
+allow beryld { sysfs_type proc_type }:lnk_file read;
+allow beryld { sysfs_type proc_type -sysfs_uhid -sysfs_pgsize_migration -sysfs_devices_cs_etm -proc_kallsyms -sysfs_batteryinfo -proc_security -sysfs_usermodehelper -usermodehelper -sysfs_leds -proc_bpf }:file rw_file_perms;
+
+# ZRAM: reset, resize and re-enable swap
+allow beryld swap_block_device:blk_file rw_file_perms;
+allow beryld toolbox_exec:file { rx_file_perms execute_no_trans };
+
+# gfprep: hand the Goodix display node back to system after the driver resets it
+allow beryld self:capability { chown fowner };
+allow beryld { sysfs_type -sysfs_uhid -sysfs_pgsize_migration -sysfs_devices_cs_etm -sysfs_batteryinfo -sysfs_usermodehelper -sysfs_leds }:file setattr;

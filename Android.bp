@@ -1,12 +1,12 @@
 soong_namespace {}
 
 android_app_import {
-    name: "MalachiteParts",
+    name: "BerylParts",
     owner: "xiaomi",
-    apk: "apps/MalachiteParts.apk",
+    apk: "apps/BerylParts.apk",
     certificate: "platform",
     privileged: true,
-    required: ["privapp-permissions-malachiteparts.xml"],
+    required: ["privapp-permissions-berylparts.xml"],
     system_ext_specific: true,
     dex_preopt: { enabled: false },
 }
@@ -31,16 +31,16 @@ android_app_import {
 }
 
 cc_binary {
-    name: "malachited",
-    srcs: ["daemon/malachited.c"],
+    name: "beryld",
+    srcs: ["daemon/beryld.c"],
     shared_libs: ["libcutils", "liblog"],
     system_ext_specific: true,
-    init_rc: ["init/malachited.rc"],
+    init_rc: ["init/beryld.rc"],
 }
 
 prebuilt_etc {
-    name: "privapp-permissions-malachiteparts.xml",
-    src: "permissions/privapp-permissions-malachiteparts.xml",
+    name: "privapp-permissions-berylparts.xml",
+    src: "permissions/privapp-permissions-berylparts.xml",
     sub_dir: "permissions",
     system_ext_specific: true,
 }

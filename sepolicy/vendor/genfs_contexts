@@ -1,1 +1,1 @@
-genfscon sysfs /devices/virtual/mi_display/disp_feature/disp-DSI-0/disp_param u:object_r:sysfs_malachite_dispparam:s0
+genfscon sysfs /devices/virtual/mi_display/disp_feature/disp-DSI-0/disp_param u:object_r:sysfs_beryl_dispparam:s0

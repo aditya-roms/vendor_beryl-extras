@@ -1,10 +1,10 @@
 PRODUCT_SOONG_NAMESPACES += vendor/beryl-extras
 
 PRODUCT_PACKAGES += \
-    MalachiteParts \
+    BerylParts \
     MMIGroup_NoIcon \
     goodix_sz \
-    malachited \
+    beryld \
     interfaces.factoryInterface@1.0-service
 
 # CIT test configs read by the factory service and the CIT app
