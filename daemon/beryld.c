@@ -11,14 +11,46 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
+#include <sys/un.h>
 #include <time.h>
 #include <sys/swap.h>
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
-#include <cutils/sockets.h>
-#include <log/log.h>
+#include <android/log.h>
+#define ALOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#define ALOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
+
+#define ANDROID_SOCKET_ENV_PREFIX "ANDROID_SOCKET_"
+#define ANDROID_SOCKET_DIR "/dev/socket"
+
+static inline int android_get_control_socket(const char *name) {
+    char key[64];
+    snprintf(key, sizeof(key), ANDROID_SOCKET_ENV_PREFIX "%s", name);
+    const char *val = getenv(key);
+    if (!val) return -1;
+    errno = 0;
+    int fd = (int)strtol(val, NULL, 10);
+    if (errno) return -1;
+    return fd;
+}
+
+static int create_standalone_socket(const char *name) {
+    int s = socket(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0);
+    if (s < 0) return -1;
+    struct sockaddr_un addr;
+    memset(&addr, 0, sizeof(addr));
+    addr.sun_family = AF_UNIX;
+    snprintf(addr.sun_path, sizeof(addr.sun_path), ANDROID_SOCKET_DIR "/%s", name);
+    unlink(addr.sun_path);
+    if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+        close(s);
+        return -1;
+    }
+    chmod(addr.sun_path, 0666);
+    return s;
+}
 
 #define ZRAM_DEV "/dev/block/zram0"
 #define ZRAM_SYS "/sys/block/zram0"
@@ -262,14 +294,28 @@ static void handle(int c) {
 int main(void) {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGCHLD, SIG_IGN);  /* reap the gfprep watcher automatically */
+
     int s = android_get_control_socket("beryld");
     if (s < 0) {
         s = android_get_control_socket("malachited");
     }
     if (s < 0) {
-        ALOGE("no control socket (tried beryld and malachited): %s", strerror(errno));
+        s = create_standalone_socket("beryld");
+    }
+    if (s < 0) {
+        s = create_standalone_socket("malachited");
+    }
+    if (s < 0) {
+        ALOGE("failed to bind socket: %s", strerror(errno));
         return 1;
     }
+
+    /* Also create secondary symlink so both beryld and malachited sockets exist */
+    struct stat st;
+    if (stat(ANDROID_SOCKET_DIR "/malachited", &st) != 0) {
+        symlink(ANDROID_SOCKET_DIR "/beryld", ANDROID_SOCKET_DIR "/malachited");
+    }
+
     if (listen(s, 4) < 0) {
         ALOGE("listen failed: %s", strerror(errno));
         return 1;
